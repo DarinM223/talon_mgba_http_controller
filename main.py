@@ -1,8 +1,7 @@
-from pynput import mouse, keyboard
-from pynput.keyboard import Key, KeyCode
-
 from controller import GameController
 from http_api import HTTP_API
+from pynput import mouse, keyboard
+from pynput.keyboard import Key, KeyCode
 
 controller = GameController(HTTP_API("http://localhost:5000"))
 
@@ -29,25 +28,33 @@ def on_press(key: Key | KeyCode | None) -> None:
             controller.press_select()
         case KeyCode() if key.char == "a":
             print("Pressed A")
+            controller.press_a()
         case KeyCode() if key.char == "A":
             print("Holding A")
+            controller.hold_a()
         case KeyCode() if key.char == "b":
             print("Pressed B")
+            controller.press_b()
         case KeyCode() if key.char == "B":
             print("Holding B")
+            controller.hold_b()
         case KeyCode() if key.char == "l":
             print("Pressed L")
+            controller.press_l()
         case KeyCode() if key.char == "L":
             print("Holding L")
+            controller.hold_l()
         case KeyCode() if key.char == "r":
             print("Pressed R")
+            controller.press_r()
         case KeyCode() if key.char == "R":
             print("Holding R")
+            controller.hold_r()
         case _:
             pass
 
 
-def on_scroll(_x: int, _y: int, dx: int, dy: int) -> bool | None:
+def on_scroll(_x: int, _y: int, _dx: int, dy: int) -> bool | None:
     if dy < 0:
         print(f"Scrolled down {dy}")
     else:
