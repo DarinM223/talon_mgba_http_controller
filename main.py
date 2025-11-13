@@ -1,24 +1,32 @@
 from pynput import mouse, keyboard
 from pynput.keyboard import Key, KeyCode
-import threading
 
-lock = threading.Lock()
+from controller import GameController
+from http_api import HTTP_API
+
+controller = GameController(HTTP_API("http://localhost:5000"))
 
 
 def on_press(key: Key | KeyCode | None) -> None:
     match key:
         case Key.left:
             print("Pressed left")
+            controller.press_left()
         case Key.right:
             print("Pressed right")
+            controller.press_right()
         case Key.up:
             print("Pressed up")
+            controller.press_up()
         case Key.down:
             print("Pressed down")
+            controller.press_down()
         case Key.enter:
             print("Pressed start")
+            controller.press_start()
         case Key.backspace:
             print("Pressed select")
+            controller.press_select()
         case KeyCode() if key.char == "a":
             print("Pressed A")
         case KeyCode() if key.char == "A":
