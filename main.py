@@ -1,8 +1,11 @@
 from pynput import mouse, keyboard
-from pynput.keyboard import Key
+from pynput.keyboard import Key, KeyCode
+import threading
+
+lock = threading.Lock()
 
 
-def on_press(key, injected):
+def on_press(key: Key | KeyCode | None) -> None:
     match key:
         case Key.left:
             print("Pressed left")
@@ -12,9 +15,31 @@ def on_press(key, injected):
             print("Pressed up")
         case Key.down:
             print("Pressed down")
+        case Key.enter:
+            print("Pressed start")
+        case Key.backspace:
+            print("Pressed select")
+        case KeyCode() if key.char == "a":
+            print("Pressed A")
+        case KeyCode() if key.char == "A":
+            print("Holding A")
+        case KeyCode() if key.char == "b":
+            print("Pressed B")
+        case KeyCode() if key.char == "B":
+            print("Holding B")
+        case KeyCode() if key.char == "l":
+            print("Pressed L")
+        case KeyCode() if key.char == "L":
+            print("Holding L")
+        case KeyCode() if key.char == "r":
+            print("Pressed R")
+        case KeyCode() if key.char == "R":
+            print("Holding R")
+        case _:
+            pass
 
 
-def on_scroll(x, y, dx, dy, injected):
+def on_scroll(_x: int, _y: int, dx: int, dy: int) -> bool | None:
     if dy < 0:
         print(f"Scrolled down {dy}")
     else:
@@ -30,7 +55,7 @@ def main():
         try:
             mouse_listener.join()
             keyboard_listener.join()
-        except:
+        except KeyboardInterrupt:
             pass
 
 
