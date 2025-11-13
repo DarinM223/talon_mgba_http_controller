@@ -1,0 +1,21 @@
+from mgba_api import MGBA_API, Key
+import requests
+
+
+class HTTP_API(MGBA_API):
+    def __init__(self, endpoint: str):
+        self.endpoint = endpoint
+
+    def add_key(self, key: Key) -> None:
+        response = requests.post(f"{self.endpoint}/core/addkey?key={key.value}")
+        assert response.status_code == 200
+
+    def clear_key(self, key: Key) -> None:
+        response = requests.post(f"{self.endpoint}/core/clearkey?key={key.value}")
+        assert response.status_code == 200
+
+    def tap(self, key: Key) -> None:
+        response = requests.post(
+            f"{self.endpoint}/mgba-http/button/tap?button={str(key)}"
+        )
+        assert response.status_code == 200
