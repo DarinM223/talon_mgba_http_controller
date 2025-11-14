@@ -1,9 +1,11 @@
-from mgba_api import MGBA_API, Key
+from mgba_api import MGBA_API, Key, BITMASK_DIRECTIONS, BITMASK_ALL_KEYS
 import threading
 import time
 
 
 class GameController:
+    SCROLL_TIMEOUT = 0.15
+
     lock: threading.Lock
     api: MGBA_API
     direction: Key | None
@@ -27,9 +29,7 @@ class GameController:
                     if self.timeout and t > self.timeout:
                         print("Clearing scrolling")
                         self.timeout = None
-                        if self.direction:
-                            self.api.clear_key(self.direction)
-                            self.api.clear_key(self.direction.reverse())
+                        self.api.clear_keys(BITMASK_DIRECTIONS)
 
         self.thread = threading.Thread(target=poll_time)
         self.thread.start()
@@ -101,7 +101,7 @@ class GameController:
     def _scroll_direction(self, direction: Key) -> None:
         if not self.timeout:
             self.api.add_key(direction)
-        self.timeout = time.time() + 0.15
+        self.timeout = time.time() + GameController.SCROLL_TIMEOUT
 
     def scroll_up(self) -> None:
         with self.lock:
@@ -112,3 +112,11 @@ class GameController:
         with self.lock:
             if self.direction:
                 self._scroll_direction(self.direction)
+
+    def reset(self) -> None:
+        with self.lock:
+            self.direction = None
+            self.holding.clear()
+            self.timeout = None
+            self.scroll_reversed = False
+            self.api.clear_keys(BITMASK_ALL_KEYS)

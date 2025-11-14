@@ -10,8 +10,16 @@ class HTTP_API(MGBA_API):
         response = requests.post(f"{self.endpoint}/core/addkey?key={key.value}")
         assert response.status_code == 200
 
+    def add_keys(self, bitmask: int) -> None:
+        response = requests.post(f"{self.endpoint}/core/addkeys?keyBitmask={bitmask}")
+        assert response.status_code == 200
+
     def clear_key(self, key: Key) -> None:
         response = requests.post(f"{self.endpoint}/core/clearkey?key={key.value}")
+        assert response.status_code == 200
+
+    def clear_keys(self, bitmask: int) -> None:
+        response = requests.post(f"{self.endpoint}/core/clearkeys?keyBitmask={bitmask}")
         assert response.status_code == 200
 
     def tap(self, key: Key) -> None:

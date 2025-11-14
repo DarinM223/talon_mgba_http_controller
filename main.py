@@ -50,6 +50,9 @@ def on_press(key: Key | KeyCode | None) -> None:
         case KeyCode() if key.char == "R":
             print("Holding R")
             controller.hold_r()
+        case Key.esc:
+            print("Pressed escape")
+            controller.reset()
         case _:
             pass
 

@@ -34,13 +34,35 @@ class Key(Enum):
                 return self
 
 
+BITMASK_DIRECTIONS = (
+    Key.RIGHT.bitmask() | Key.LEFT.bitmask() | Key.UP.bitmask() | Key.DOWN.bitmask()
+)
+BITMASK_ALL_KEYS = (
+    Key.A.bitmask()
+    | Key.B.bitmask()
+    | Key.SELECT.bitmask()
+    | Key.START.bitmask()
+    | Key.L.bitmask()
+    | Key.R.bitmask()
+    | BITMASK_DIRECTIONS
+)
+
+
 class MGBA_API(ABC):
     @abstractmethod
     def add_key(self, key: Key) -> None:
         pass
 
     @abstractmethod
+    def add_keys(self, bitmask: int) -> None:
+        pass
+
+    @abstractmethod
     def clear_key(self, key: Key) -> None:
+        pass
+
+    @abstractmethod
+    def clear_keys(self, bitmask: int) -> None:
         pass
 
     @abstractmethod
