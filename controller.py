@@ -1,5 +1,6 @@
 from mgba_api import MGBA_API, Key
 import threading
+import time
 
 
 class GameController:
@@ -7,15 +8,35 @@ class GameController:
     api: MGBA_API
     direction: Key | None
     holding: set[Key]
+    timeout: float | None
+    scroll_reversed: bool
+    thread: threading.Thread
 
     def __init__(self, api: MGBA_API) -> None:
         self.lock = threading.Lock()
         self.api = api
         self.direction = None
         self.holding = set()
+        self.timeout = None
+        self.scroll_reversed = False
+
+        def poll_time():
+            while True:
+                with self.lock:
+                    t = time.time()
+                    if self.timeout and t > self.timeout:
+                        print("Clearing scrolling")
+                        self.timeout = None
+                        if self.direction:
+                            self.api.clear_key(self.direction)
+                            self.api.clear_key(self.direction.reverse())
+
+        self.thread = threading.Thread(target=poll_time)
+        self.thread.start()
 
     def _tap_direction(self, direction: Key) -> None:
         with self.lock:
+            self.timeout = None
             self.direction = direction
             self.api.tap(self.direction)
 
@@ -76,3 +97,18 @@ class GameController:
 
     def hold_r(self) -> None:
         self._hold_key(Key.R)
+
+    def _scroll_direction(self, direction: Key) -> None:
+        if not self.timeout:
+            self.api.add_key(direction)
+        self.timeout = time.time() + 0.15
+
+    def scroll_up(self) -> None:
+        with self.lock:
+            if self.direction:
+                self._scroll_direction(self.direction.reverse())
+
+    def scroll_down(self) -> None:
+        with self.lock:
+            if self.direction:
+                self._scroll_direction(self.direction)

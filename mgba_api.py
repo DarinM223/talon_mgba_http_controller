@@ -20,6 +20,19 @@ class Key(Enum):
     def __str__(self) -> str:
         return self.name[0] + self.name[1:].lower()
 
+    def reverse(self) -> "Key":
+        match self:
+            case Key.LEFT:
+                return Key.RIGHT
+            case Key.RIGHT:
+                return Key.LEFT
+            case Key.UP:
+                return Key.DOWN
+            case Key.DOWN:
+                return Key.UP
+            case _:
+                return self
+
 
 class MGBA_API(ABC):
     @abstractmethod

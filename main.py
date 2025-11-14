@@ -57,8 +57,10 @@ def on_press(key: Key | KeyCode | None) -> None:
 def on_scroll(_x: int, _y: int, _dx: int, dy: int) -> bool | None:
     if dy < 0:
         print(f"Scrolled down {dy}")
+        controller.scroll_down()
     else:
         print(f"Scrolled up {dy}")
+        controller.scroll_up()
 
 
 def main():
