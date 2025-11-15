@@ -1,6 +1,9 @@
 from mgba_api import MGBA_API, Key, BITMASK_DIRECTIONS, BITMASK_ALL_KEYS
+import logging
 import threading
 import time
+
+logger = logging.getLogger(__name__)
 
 
 class GameController:
@@ -27,7 +30,7 @@ class GameController:
                 with self.lock:
                     t = time.time()
                     if self.timeout and t > self.timeout:
-                        print("Clearing scrolling")
+                        logger.debug("Clearing scrolling")
                         self.timeout = None
                         self.api.clear_keys(BITMASK_DIRECTIONS)
 
