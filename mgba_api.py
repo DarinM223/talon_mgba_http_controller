@@ -21,19 +21,15 @@ class Key(Enum):
         return self.name[0] + self.name[1:].lower()
 
     def reverse(self) -> "Key":
-        match self:
-            case Key.LEFT:
-                return Key.RIGHT
-            case Key.RIGHT:
-                return Key.LEFT
-            case Key.UP:
-                return Key.DOWN
-            case Key.DOWN:
-                return Key.UP
-            case _:
-                return self
+        return _reverse_keys[self] if self in _reverse_keys else self
 
 
+_reverse_keys = {
+    Key.LEFT: Key.RIGHT,
+    Key.RIGHT: Key.LEFT,
+    Key.UP: Key.DOWN,
+    Key.DOWN: Key.UP,
+}
 BITMASK_DIRECTIONS = (
     Key.RIGHT.bitmask() | Key.LEFT.bitmask() | Key.UP.bitmask() | Key.DOWN.bitmask()
 )
@@ -49,22 +45,35 @@ BITMASK_ALL_KEYS = (
 
 
 class MGBA_API(ABC):
+    """Functions for controlling mGBA with input keys."""
+
     @abstractmethod
     def add_key(self, key: Key) -> None:
+        """Adds a key to be held down."""
         pass
 
     @abstractmethod
     def add_keys(self, bitmask: int) -> None:
+        """
+        Adds a bitmask of multiple keys to be held down.
+        Multiple keys are combined with the bitwise or of their bitmasks.
+        """
         pass
 
     @abstractmethod
     def clear_key(self, key: Key) -> None:
+        """Releases a held down key."""
         pass
 
     @abstractmethod
     def clear_keys(self, bitmask: int) -> None:
+        """
+        Adds a bitmask of multiple keys to be released.
+        Multiple keys are combined with the bitwise or of their bitmasks.
+        """
         pass
 
     @abstractmethod
     def tap(self, key: Key) -> None:
+        """A cycle of holding down and releasing a key."""
         pass

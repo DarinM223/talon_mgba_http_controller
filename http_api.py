@@ -3,6 +3,11 @@ import requests
 
 
 class HTTP_API(MGBA_API):
+    """
+    Controls mGBA by sending HTTP requests to the server running
+    [mGBA-http](https://github.com/nikouu/mGBA-http).
+    """
+
     def __init__(self, endpoint: str):
         self.endpoint = endpoint
 

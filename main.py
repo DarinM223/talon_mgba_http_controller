@@ -7,56 +7,30 @@ from pynput.keyboard import Key, KeyCode
 logger = logging.getLogger(__name__)
 controller = GameController(HTTP_API("http://localhost:5000"))
 
+key_mapping = {
+    Key.left: GameController.press_left,
+    Key.right: GameController.press_right,
+    Key.up: GameController.press_up,
+    Key.down: GameController.press_down,
+    Key.enter: GameController.press_start,
+    Key.backspace: GameController.press_select,
+    Key.esc: GameController.reset,
+    "a": GameController.press_a,
+    "b": GameController.press_b,
+    "l": GameController.press_l,
+    "r": GameController.press_r,
+    "A": GameController.hold_a,
+    "B": GameController.hold_b,
+    "L": GameController.hold_l,
+    "R": GameController.hold_r,
+}
+
 
 def on_press(key: Key | KeyCode | None) -> None:
-    match key:
-        case Key.left:
-            logger.debug("Pressed left")
-            controller.press_left()
-        case Key.right:
-            logger.debug("Pressed right")
-            controller.press_right()
-        case Key.up:
-            logger.debug("Pressed up")
-            controller.press_up()
-        case Key.down:
-            logger.debug("Pressed down")
-            controller.press_down()
-        case Key.enter:
-            logger.debug("Pressed start")
-            controller.press_start()
-        case Key.backspace:
-            logger.debug("Pressed select")
-            controller.press_select()
-        case KeyCode() if key.char == "a":
-            logger.debug("Pressed A")
-            controller.press_a()
-        case KeyCode() if key.char == "A":
-            logger.debug("Holding A")
-            controller.hold_a()
-        case KeyCode() if key.char == "b":
-            logger.debug("Pressed B")
-            controller.press_b()
-        case KeyCode() if key.char == "B":
-            logger.debug("Holding B")
-            controller.hold_b()
-        case KeyCode() if key.char == "l":
-            logger.debug("Pressed L")
-            controller.press_l()
-        case KeyCode() if key.char == "L":
-            logger.debug("Holding L")
-            controller.hold_l()
-        case KeyCode() if key.char == "r":
-            logger.debug("Pressed R")
-            controller.press_r()
-        case KeyCode() if key.char == "R":
-            logger.debug("Holding R")
-            controller.hold_r()
-        case Key.esc:
-            logger.debug("Pressed escape")
-            controller.reset()
-        case _:
-            pass
+    map_key = key.char if isinstance(key, KeyCode) else key
+    if map_key in key_mapping:
+        logger.debug(f"Pressed {map_key}")
+        key_mapping[map_key](controller)
 
 
 def on_scroll(_x: int, _y: int, _dx: int, dy: int) -> bool | None:
