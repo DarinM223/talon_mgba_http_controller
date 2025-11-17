@@ -46,15 +46,15 @@ def main():
     logging.basicConfig(level=logging.INFO)
     print("talon-mgba-http-controller started...")
     print("Listening to a/b/l/r/enter/backspace/escape/arrow keys...")
-    with (
-        mouse.Listener(on_scroll=on_scroll) as mouse_listener,
-        keyboard.Listener(on_press=on_press) as keyboard_listener,
-    ):
-        try:
+    try:
+        with (
+            mouse.Listener(on_scroll=on_scroll) as mouse_listener,
+            keyboard.Listener(on_press=on_press) as keyboard_listener,
+        ):
             mouse_listener.join()
             keyboard_listener.join()
-        except KeyboardInterrupt:
-            pass
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == "__main__":
